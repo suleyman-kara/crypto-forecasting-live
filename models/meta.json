@@ -1,0 +1,94 @@
+{
+  "version": "2026-11-23-2000",
+  "trainedThrough": "2026-11-23T20:00:00+00:00",
+  "trainRows": 24687,
+  "trainFrom": "2015-07-27T20:00:00+00:00",
+  "includesHoldout": true,
+  "features": [
+    "ret_lag_1",
+    "ret_lag_2",
+    "ret_lag_6",
+    "vol_6",
+    "day_of_week",
+    "range_close",
+    "vol_42",
+    "ema_diff"
+  ],
+  "selection": {
+    "method": "SFS",
+    "k": 8,
+    "rankings": {
+      "MRMR": [
+        "ret_lag_1",
+        "ret_lag_6",
+        "day_of_week",
+        "ret_lag_2",
+        "ret_lag_3",
+        "vol_6",
+        "rsi_14",
+        "hour",
+        "range_close",
+        "ret_lag_12",
+        "ret_lag_42",
+        "volume_z",
+        "vol_42",
+        "ema_diff"
+      ],
+      "RFE": [
+        "ret_lag_1",
+        "ret_lag_6",
+        "day_of_week",
+        "volume_z",
+        "hour",
+        "vol_6",
+        "ret_lag_2",
+        "ema_diff",
+        "range_close",
+        "rsi_14",
+        "ret_lag_12",
+        "vol_42",
+        "ret_lag_42",
+        "ret_lag_3"
+      ],
+      "SFS": [
+        "ret_lag_1",
+        "ret_lag_2",
+        "ret_lag_6",
+        "vol_6",
+        "day_of_week",
+        "range_close",
+        "vol_42",
+        "ema_diff"
+      ]
+    },
+    "cvLogLoss": {
+      "MRMR@3": 0.6908796826998392,
+      "MRMR@5": 0.6913750569025675,
+      "MRMR@8": 0.6910220583279928,
+      "RFE@3": 0.6908796826998392,
+      "RFE@5": 0.6913917462031046,
+      "RFE@8": 0.6906356414159139,
+      "SFS@3": 0.6904806693394979,
+      "SFS@5": 0.6902503967285156,
+      "SFS@8": 0.6898054679234823
+    }
+  },
+  "threshold": 0.1,
+  "decisionRule": "long if p > 0.5 + threshold, else flat",
+  "params": {
+    "colsample_bytree": 1.0,
+    "learning_rate": 0.03910200533840993,
+    "max_depth": 2,
+    "min_child_weight": 50,
+    "n_estimators": 50,
+    "subsample": 0.5
+  },
+  "tuningCvLogLoss": 0.6898557394742966,
+  "seed": 42,
+  "costPerSide": {
+    "fee": 0.001,
+    "slippage": 0.0005
+  },
+  "bar": "4h, UTC-aligned (00/04/08/12/16/20)",
+  "product": "BTC-USD"
+}
