@@ -98,7 +98,160 @@
   "holdout": {
     "from": "2026-05-23T00:00:00+00:00",
     "to": "2026-11-23T00:00:00+00:00",
-    "evaluated": false
+    "evaluated": true,
+    "evaluatedAt": "2026-11-23T23:27:39+00:00",
+    "period": {
+      "from": "2026-05-23T00:00:00+00:00",
+      "to": "2026-11-23T00:00:00+00:00"
+    },
+    "predictions": 1104,
+    "windows": 7,
+    "accuracy": 0.530797,
+    "auc": 0.546848,
+    "logLoss": 0.691089,
+    "brier": 0.248968,
+    "returnPct": -6.2574,
+    "buyHoldReturnPct": -19.0508,
+    "maxDrawdownPct": -7.1504,
+    "buyHoldMaxDrawdownPct": -34.6667,
+    "sharpe": -1.4269,
+    "buyHoldSharpe": -0.8549,
+    "exposurePct": 3.2609,
+    "trades": 35,
+    "alwaysUpAccuracy": 0.494565,
+    "upRate": 0.494565,
+    "binomialPValueVs50": 0.043702795824044155,
+    "binomialPValueVsUpRate": 0.008701308380780528,
+    "thresholds": [
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1
+    ],
+    "selectionRounds": [
+      {
+        "window": 0,
+        "train_to": "2026-05-22T16:00:00+00:00",
+        "method": "SFS",
+        "k": 5,
+        "features": [
+          "ret_lag_1",
+          "ret_lag_2",
+          "vol_6",
+          "hour",
+          "range_close"
+        ],
+        "params": {
+          "colsample_bytree": 0.7232082366107992,
+          "learning_rate": 0.01,
+          "max_depth": 4,
+          "min_child_weight": 43,
+          "n_estimators": 240,
+          "subsample": 0.8517830160182817
+        }
+      },
+      {
+        "window": 6,
+        "train_to": "2026-11-06T16:00:00+00:00",
+        "method": "RFE",
+        "k": 8,
+        "features": [
+          "ret_lag_1",
+          "ret_lag_6",
+          "hour",
+          "day_of_week",
+          "ret_lag_2",
+          "volume_z",
+          "vol_6",
+          "range_close"
+        ],
+        "params": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.01,
+          "max_depth": 2,
+          "min_child_weight": 1,
+          "n_estimators": 300,
+          "subsample": 0.5066140449075041
+        }
+      }
+    ],
+    "table": {
+      "Model": {
+        "n": 1104,
+        "accuracy": 0.530797,
+        "auc": 0.546848,
+        "log_loss": 0.691089,
+        "brier": 0.248968,
+        "binom_p_vs_50": 0.043703,
+        "return_pct": -6.257366,
+        "sharpe": -1.426894,
+        "max_drawdown_pct": -7.15043,
+        "exposure_pct": 3.26087,
+        "trades": 35,
+        "binom_p_vs_up_rate": 0.008701,
+        "up_rate": 0.494565
+      },
+      "Model, m = 0 (no threshold)": {
+        "accuracy": null,
+        "auc": null,
+        "log_loss": null,
+        "brier": null,
+        "return_pct": -54.301234,
+        "sharpe": -4.790732,
+        "max_drawdown_pct": -58.130208,
+        "exposure_pct": 62.137681,
+        "trades": 231
+      },
+      "Buy & hold": {
+        "return_pct": -19.050768,
+        "sharpe": -0.854941,
+        "max_drawdown_pct": -34.666672,
+        "exposure_pct": 100.0,
+        "trades": 1
+      },
+      "Always up": {
+        "n": 1104,
+        "accuracy": 0.494565,
+        "auc": 0.5,
+        "log_loss": null,
+        "brier": null,
+        "binom_p_vs_50": 0.740615,
+        "return_pct": -19.050768,
+        "sharpe": -0.854941,
+        "max_drawdown_pct": -34.666672,
+        "exposure_pct": 100.0,
+        "trades": 1
+      },
+      "Momentum": {
+        "n": 1104,
+        "accuracy": 0.453804,
+        "auc": 0.455506,
+        "log_loss": null,
+        "brier": null,
+        "binom_p_vs_50": 0.002353,
+        "return_pct": -69.109165,
+        "sharpe": -8.153382,
+        "max_drawdown_pct": -70.31226,
+        "exposure_pct": 49.365942,
+        "trades": 301
+      },
+      "Random": {
+        "n": 1104,
+        "accuracy": 0.52808,
+        "auc": 0.526448,
+        "log_loss": null,
+        "brier": null,
+        "binom_p_vs_50": 0.066326,
+        "return_pct": -60.747946,
+        "sharpe": -6.765842,
+        "max_drawdown_pct": -61.937586,
+        "exposure_pct": 49.90942,
+        "trades": 279
+      }
+    }
   },
   "config": {
     "step": 168,
