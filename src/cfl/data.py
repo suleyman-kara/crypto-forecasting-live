@@ -23,6 +23,7 @@ COLUMNS = ["open", "high", "low", "close", "volume"]
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE_PATH = ROOT / "data" / "candles_1h.parquet"
+LIVE_PATH = ROOT / "data" / "candles_1h_live.csv"  # appended by the live job
 
 
 def _get(session: requests.Session, url: str, params: dict, retries: int = 6) -> list:
@@ -86,30 +87,63 @@ def fetch_1h(start: pd.Timestamp, end: pd.Timestamp, product: str = PRODUCT,
     return df[(df.index >= start) & (df.index < end)]
 
 
+def _read_live(live_path: Path) -> pd.DataFrame | None:
+    if live_path is None or not live_path.exists():
+        return None
+    df = pd.read_csv(live_path)
+    df.index = pd.DatetimeIndex(pd.to_datetime(df.pop("time"), utc=True), name="time")
+    return df[COLUMNS].astype(float)
+
+
+def _append_live(live_path: Path, new: pd.DataFrame) -> None:
+    """Append rows to the text cache (one line per hour, git-diff friendly)."""
+    live_path.parent.mkdir(parents=True, exist_ok=True)
+    out = new[COLUMNS].copy()
+    out.index = out.index.strftime("%Y-%m-%dT%H:%M:%SZ")
+    out.index.name = "time"
+    header = not live_path.exists()
+    with live_path.open("a", newline="") as fh:
+        out.to_csv(fh, header=header)
+
+
 def update_cache(path: Path = CACHE_PATH, now: pd.Timestamp | None = None,
-                 verbose: bool = True) -> pd.DataFrame:
-    """Append newly closed 1h candles to the parquet cache and return the full cache."""
+                 verbose: bool = True, live_path: Path | None = LIVE_PATH) -> pd.DataFrame:
+    """Fetch newly closed 1h candles and return the full cache.
+
+    The parquet file holds the bulk history and is only written when it does not exist
+    yet. Later candles are appended to ``live_path`` (CSV), so the scheduled live job
+    adds a few small lines per run instead of rewriting a 4 MB binary file in git.
+    Pass ``live_path=None`` to append to the parquet file instead.
+    """
     now = pd.Timestamp.now(tz="UTC") if now is None else now
     last_closed_end = now.floor("h")  # the candle opened at now.floor('h') is still open
-    if path.exists():
-        cache = pd.read_parquet(path)
-        start = cache.index.max() + HOUR
-    else:
-        cache = None
-        start = EARLIEST
+    cache = load_1h(path, live_path) if path.exists() else None
+    start = EARLIEST if cache is None else cache.index.max() + HOUR
     if start < last_closed_end:
         if verbose:
             print(f"Fetching 1h candles {start} -> {last_closed_end}", flush=True)
         new = fetch_1h(start, last_closed_end, verbose=verbose)
-        cache = new if cache is None else pd.concat([cache, new])
-        cache = cache[~cache.index.duplicated(keep="last")].sort_index()
-        path.parent.mkdir(parents=True, exist_ok=True)
-        cache.to_parquet(path, compression="zstd")
+        new = new[new.index >= start]
+        if len(new):
+            if cache is not None and live_path is not None:
+                _append_live(live_path, new)
+                cache = pd.concat([cache, new])
+            else:
+                cache = new if cache is None else pd.concat([cache, new])
+                cache = cache[~cache.index.duplicated(keep="last")].sort_index()
+                path.parent.mkdir(parents=True, exist_ok=True)
+                cache.to_parquet(path, compression="zstd")
     return cache
 
 
-def load_1h(path: Path = CACHE_PATH) -> pd.DataFrame:
-    return pd.read_parquet(path)
+def load_1h(path: Path = CACHE_PATH, live_path: Path | None = LIVE_PATH) -> pd.DataFrame:
+    """The parquet history plus any candles appended to the live CSV."""
+    df = pd.read_parquet(path)
+    live = _read_live(live_path)
+    if live is not None and len(live):
+        df = pd.concat([df, live])
+        df = df[~df.index.duplicated(keep="last")].sort_index()
+    return df
 
 
 def resample_4h(h1: pd.DataFrame, as_of: pd.Timestamp | None = None) -> pd.DataFrame:
