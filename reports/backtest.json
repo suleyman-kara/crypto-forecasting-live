@@ -1,0 +1,125 @@
+{
+  "period": {
+    "from": "2017-08-03T08:00:00+00:00",
+    "to": "2026-05-23T00:00:00+00:00"
+  },
+  "accuracy": 0.536618,
+  "auc": 0.553743,
+  "returnPct": -93.6284,
+  "buyHoldReturnPct": 2730.3951,
+  "maxDrawdownPct": -97.8391,
+  "sharpe": -0.301,
+  "trades": 2181,
+  "predictions": 19198,
+  "logLoss": 0.688956,
+  "brier": 0.247914,
+  "exposurePct": 47.4789,
+  "buyHoldMaxDrawdownPct": -84.0432,
+  "buyHoldSharpe": 0.8999,
+  "binomialPValueVs50": 3.497341125963326e-24,
+  "binomialPValueVsUpRate": 1.7454450189986793e-11,
+  "upRate": 0.51271,
+  "baselines": {
+    "Model, m = 0 (no threshold)": {
+      "accuracy": null,
+      "auc": null,
+      "log_loss": null,
+      "brier": null,
+      "return_pct": -99.078797,
+      "sharpe": -0.596473,
+      "max_drawdown_pct": -99.811861,
+      "exposure_pct": 71.210543,
+      "trades": 3429
+    },
+    "Buy & hold": {
+      "return_pct": 2730.395056,
+      "sharpe": 0.899867,
+      "max_drawdown_pct": -84.043156,
+      "exposure_pct": 100.0,
+      "trades": 1
+    },
+    "Always up": {
+      "n": 19198,
+      "accuracy": 0.51271,
+      "auc": 0.5,
+      "log_loss": null,
+      "brier": null,
+      "binom_p_vs_50": 0.00044,
+      "return_pct": 2730.395056,
+      "sharpe": 0.899867,
+      "max_drawdown_pct": -84.043156,
+      "exposure_pct": 100.0,
+      "trades": 1
+    },
+    "Momentum": {
+      "n": 19198,
+      "accuracy": 0.459423,
+      "auc": 0.451964,
+      "log_loss": null,
+      "brier": null,
+      "binom_p_vs_50": 0.0,
+      "return_pct": -99.99998,
+      "sharpe": -3.473805,
+      "max_drawdown_pct": -99.999985,
+      "exposure_pct": 51.270966,
+      "trades": 5189
+    },
+    "Random": {
+      "n": 19198,
+      "accuracy": 0.493593,
+      "auc": 0.49335,
+      "log_loss": null,
+      "brier": null,
+      "binom_p_vs_50": 0.07702,
+      "return_pct": -99.999777,
+      "sharpe": -2.743756,
+      "max_drawdown_pct": -99.999889,
+      "exposure_pct": 50.229191,
+      "trades": 4872
+    }
+  },
+  "featureSelection": {
+    "ret_lag_1": 20,
+    "ret_lag_2": 18,
+    "hour": 15,
+    "ret_lag_6": 15,
+    "volume_z": 15,
+    "day_of_week": 11,
+    "vol_6": 10,
+    "rsi_14": 10,
+    "range_close": 8,
+    "vol_42": 7,
+    "ret_lag_12": 6,
+    "ema_diff": 2,
+    "ret_lag_3": 1,
+    "ret_lag_42": 0
+  },
+  "selectionRounds": 20,
+  "holdout": {
+    "from": "2026-05-23T00:00:00+00:00",
+    "to": "2026-11-23T00:00:00+00:00",
+    "evaluated": false
+  },
+  "config": {
+    "step": 168,
+    "minTrain": 4380,
+    "tuneEvery": 6,
+    "nIter": 20,
+    "fee": 0.001,
+    "slippage": 0.0005,
+    "thresholdGrid": [
+      0.0,
+      0.005,
+      0.01,
+      0.015,
+      0.02,
+      0.03,
+      0.04,
+      0.05,
+      0.075,
+      0.1
+    ],
+    "dataEnd": "2026-11-23T00:00:00+00:00"
+  },
+  "runtimeSeconds": 525.6
+}
