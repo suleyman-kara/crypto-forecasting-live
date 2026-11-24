@@ -239,7 +239,9 @@ def build_status(records: list[dict], model: dict | None, backtest: dict | None,
     current = None
     if last is not None and last["outcome"] == "pending":
         current = {"candleOpen": last["target_open"], "targetClose": last["target_close"], "p": last["p"],
-                   "direction": last["direction"], "action": last["action"], "threshold": last["threshold"]}
+                   "direction": last["direction"], "action": last["action"],
+                   # Site shows the p(up) level above which the model goes long: 0.5 + m.
+                   "threshold": round(0.5 + last["threshold"], 6)}
 
     recent = [{"candleOpen": r["target_open"], "p": r["p"], "direction": r["direction"], "action": r["action"],
                "outcome": r["outcome"],
