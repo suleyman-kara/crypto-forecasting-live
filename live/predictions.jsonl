@@ -1,0 +1,1 @@
+{"candle_open": "2026-11-23T20:00:00Z", "target_open": "2026-11-24T00:00:00Z", "target_close": "2026-11-24T04:00:00Z", "predicted_at": "2026-11-24T00:07:18Z", "p": 0.514235, "direction": "up", "action": "flat", "threshold": 0.1, "model_version": "2026-11-23-2000", "close_at_prediction": 61189.97, "outcome": "pending", "realized_return_pct": null, "resolved": false}

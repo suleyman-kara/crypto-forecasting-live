@@ -61,3 +61,23 @@ def test_resample_partial_and_empty_buckets():
     empty = bars[bars["n_hours"] == 0]
     assert len(empty) == 1
     assert empty[["open", "high", "low", "close", "volume"]].isna().all().all()
+
+
+def test_update_cache_appends_to_live_csv(tmp_path, monkeypatch):
+    import cfl.data as data
+    full = make_1h(48, start="2021-03-01 00:00")
+    monkeypatch.setattr(data, "fetch_1h", lambda s, e, verbose=True: full[(full.index >= s) & (full.index < e)])
+    pq, csv = tmp_path / "c.parquet", tmp_path / "live.csv"
+    data.update_cache(pq, now=pd.Timestamp("2021-03-01 12:30", tz="UTC"), live_path=csv)
+    assert pq.exists() and not csv.exists()
+    parquet_bytes = pq.read_bytes()
+    out = data.update_cache(pq, now=pd.Timestamp("2021-03-02 05:10", tz="UTC"), live_path=csv)
+    assert pq.read_bytes() == parquet_bytes          # bulk file untouched
+    assert len(csv.read_text().splitlines()) == 1 + 17  # header + 12:00..04:00
+    loaded = data.load_1h(pq, csv)
+    pd.testing.assert_frame_equal(loaded, full.iloc[:29], check_freq=False, check_index_type=False)
+    assert len(out) == 29
+    # nothing new within the same hour: no write
+    before = csv.read_bytes()
+    data.update_cache(pq, now=pd.Timestamp("2021-03-02 05:50", tz="UTC"), live_path=csv)
+    assert csv.read_bytes() == before

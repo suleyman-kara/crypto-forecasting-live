@@ -42,6 +42,39 @@ than buy & hold only because the cost-covering threshold kept it in cash 97% of 
 time. The design was frozen before any of these numbers were seen and was not tuned
 afterwards; the live log below tests it on candles that did not exist when it was built.
 
+## Live
+
+Every 4 hours, 7 minutes after a candle closes, [`predict.yml`](.github/workflows/predict.yml)
+runs `scripts/predict.py`:
+
+1. Fetch the new 1h candles from Coinbase.
+2. Score every earlier prediction whose target candle has now closed: **hit** when the
+   predicted direction matches the sign of that candle's close-to-close return.
+3. Predict the candle that has just opened, using data through the close of the one
+   that just closed, and append it to [`live/predictions.jsonl`](live/predictions.jsonl)
+   with `predicted_at`, `p` = P(up), direction, action (`long` if `p > 0.5 + m`, else
+   `flat`) and the model version.
+4. Update the paper portfolio ($10,000, long/flat, the backtest's costs) and buy & hold,
+   both starting at the first live prediction, and write
+   [`live/status.json`](live/status.json).
+5. Commit `data/` and `live/` if anything changed.
+
+Missed slots are never filled in afterwards. If no prediction was made while a target
+candle was open, or a run starts more than an hour after it opened, the slot is
+recorded as `skipped` with the reason. Running the script twice for the same candle
+changes nothing. [`retrain.yml`](.github/workflows/retrain.yml) refits the model on all
+committed candles every Sunday and commits `models/` with a new version.
+
+**Why the log can be trusted:** each prediction reaches GitHub in a commit made while
+its target candle is still open, and the outcome is written by a later commit. Git
+history and GitHub's push timestamps show when every line appeared; changing a past
+prediction would mean rewriting public history, which anyone with a clone would see.
+
+The website reads the summary straight from
+`https://raw.githubusercontent.com/suleyman-kara/crypto-forecasting-live/main/live/status.json`
+(schema 1: current prediction, hit rate overall and over 30 days, paper equity vs buy &
+hold, the last 20 predictions, and the walk-forward backtest numbers).
+
 ## Running it
 
 ```bash
@@ -53,9 +86,10 @@ pip install -e . --no-deps
 python -m pytest -q                # tests, no network
 python scripts/backtest.py         # walk-forward report into reports/ (~9 min, 4 cores)
 python scripts/train.py            # live model into models/ (~30 s)
+python scripts/predict.py          # one live step (fetches candles, writes live/)
 ```
 
-`--update-data` on either script fetches new 1h candles from the Coinbase Exchange
+`--update-data` on the first two fetches new 1h candles from the Coinbase Exchange
 public API (no key) into `data/candles_1h.parquet` first. The backtest stops at a frozen
 `DATA_END`, so a larger cache does not change the report. `backtest.py
 --evaluate-holdout` was the one-time holdout evaluation; it refuses to run again once
@@ -74,8 +108,13 @@ public API (no key) into `data/candles_1h.parquet` first. The backtest stops at 
 | `src/cfl/metrics.py` | Classification and trading metrics, baselines, selection stability |
 | `src/cfl/report.py` | Charts and tables for `reports/` |
 | `scripts/backtest.py` | Walk-forward backtest and the one-time holdout evaluation |
+| `src/cfl/live.py` | Live prediction, scoring, paper portfolio, `status.json` |
 | `scripts/train.py` | Fits the live model on every labelled candle |
-| `data/candles_1h.parquet` | BTC-USD 1h candles since 2015-07-20 |
+| `scripts/predict.py` | One live step (run by `predict.yml`) |
+| `data/candles_1h.parquet` | BTC-USD 1h candles since 2015-07-20 (bulk history) |
+| `data/candles_1h_live.csv` | Newer 1h candles, appended by the live job |
+| `live/predictions.jsonl` | Every live prediction and its outcome, one line per 4h slot |
+| `live/status.json` | Summary the website reads |
 | `models/model.json`, `meta.json` | Live model (XGBoost JSON) and its features, threshold and parameters |
 | `reports/` | Backtest and holdout report, charts, per-row predictions |
 
@@ -102,6 +141,9 @@ public API (no key) into `data/candles_1h.parquet` first. The backtest stops at 
 | MRMR, RFE and SFS compete; SFS keeps its order | The winner and K are picked by CV on the training window, and "first K" means the first K chosen (Known Limitation 3). |
 | Threshold m chosen on out-of-fold training predictions | m has to cover 0.30% round-trip costs; choosing it on test results would be tuning on the test set. |
 | NaN rows dropped, empty 4h buckets left empty | Filling with 0 or forward-filling invents prices and returns. |
+| Live slots that were missed or started late are `skipped`, never back-filled | A prediction made after its candle opened has seen part of the outcome. |
+| A skipped slot keeps the previous paper position | Nobody acted, so whatever was held stays held; the portfolio is marked to that candle's return. |
+| New candles go to an append-only CSV, not the parquet file | Rewriting a 4 MB binary every 4 hours would add gigabytes to the git history within a year. |
 | Coinbase, not Binance | Binance blocks GitHub's US runners; Coinbase's public candles need no key. |
 | Fixed seed (42) | Two runs give the same report. |
 
