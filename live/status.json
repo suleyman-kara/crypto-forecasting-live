@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generatedAt": "2026-11-24T00:07:18Z",
+ "generatedAt": "2026-11-24T14:45:55Z",
  "asset": "BTC-USD",
  "interval": "4h",
  "mode": "paper",
@@ -9,23 +9,16 @@
   "version": "2026-11-23-2000",
   "trainedThrough": "2026-11-23T20:00:00+00:00"
  },
- "current": {
-  "candleOpen": "2026-11-24T00:00:00Z",
-  "targetClose": "2026-11-24T04:00:00Z",
-  "p": 0.514235,
-  "direction": "up",
-  "action": "flat",
-  "threshold": 0.6
- },
+ "current": null,
  "stats": {
   "predictions": 1,
-  "scored": 0,
+  "scored": 1,
   "hits": 0,
-  "accuracy": null,
-  "accuracy30d": null,
+  "accuracy": 0.0,
+  "accuracy30d": 0.0,
   "equity": 10000.0,
   "returnPct": 0.0,
-  "buyHoldReturnPct": 0.0,
+  "buyHoldReturnPct": -1.5261,
   "maxDrawdownPct": 0.0,
   "since": "2026-11-24T00:00:00Z"
  },
@@ -34,16 +27,55 @@
    "t": "2026-11-24T00:00:00Z",
    "model": 10000.0,
    "buyHold": 10000.0
+  },
+  {
+   "t": "2026-11-24T04:00:00Z",
+   "model": 10000.0,
+   "buyHold": 9832.8
+  },
+  {
+   "t": "2026-11-24T08:00:00Z",
+   "model": 10000.0,
+   "buyHold": 9849.56
+  },
+  {
+   "t": "2026-11-24T12:00:00Z",
+   "model": 10000.0,
+   "buyHold": 9847.39
   }
  ],
  "recent": [
+  {
+   "candleOpen": "2026-11-24T12:00:00Z",
+   "p": null,
+   "direction": null,
+   "action": null,
+   "outcome": "skipped",
+   "realizedReturnPct": null
+  },
+  {
+   "candleOpen": "2026-11-24T08:00:00Z",
+   "p": null,
+   "direction": null,
+   "action": null,
+   "outcome": "skipped",
+   "realizedReturnPct": null
+  },
+  {
+   "candleOpen": "2026-11-24T04:00:00Z",
+   "p": null,
+   "direction": null,
+   "action": null,
+   "outcome": "skipped",
+   "realizedReturnPct": null
+  },
   {
    "candleOpen": "2026-11-24T00:00:00Z",
    "p": 0.514235,
    "direction": "up",
    "action": "flat",
-   "outcome": "pending",
-   "realizedReturnPct": null
+   "outcome": "miss",
+   "realizedReturnPct": -1.5243
   }
  ],
  "backtest": {
