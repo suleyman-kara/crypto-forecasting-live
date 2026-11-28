@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "generatedAt": "2026-11-27T13:45:31Z",
+ "generatedAt": "2026-11-28T00:00:33Z",
  "asset": "BTC-USD",
  "interval": "4h",
  "mode": "paper",
@@ -9,16 +9,23 @@
   "version": "2026-11-23-2000",
   "trainedThrough": "2026-11-23T20:00:00+00:00"
  },
- "current": null,
+ "current": {
+  "candleOpen": "2026-11-28T00:00:00Z",
+  "targetClose": "2026-11-28T04:00:00Z",
+  "p": 0.490285,
+  "direction": "down",
+  "action": "flat",
+  "threshold": 0.6
+ },
  "stats": {
-  "predictions": 4,
+  "predictions": 5,
   "scored": 4,
   "hits": 1,
   "accuracy": 0.25,
   "accuracy30d": 0.25,
   "equity": 10000.0,
   "returnPct": 0.0,
-  "buyHoldReturnPct": 0.4769,
+  "buyHoldReturnPct": -2.3502,
   "maxDrawdownPct": 0.0,
   "since": "2026-11-24T00:00:00Z"
  },
@@ -132,9 +139,48 @@
    "t": "2026-11-27T12:00:00Z",
    "model": 10000.0,
    "buyHold": 10047.69
+  },
+  {
+   "t": "2026-11-27T16:00:00Z",
+   "model": 10000.0,
+   "buyHold": 9799.79
+  },
+  {
+   "t": "2026-11-27T20:00:00Z",
+   "model": 10000.0,
+   "buyHold": 9763.61
+  },
+  {
+   "t": "2026-11-28T00:00:00Z",
+   "model": 10000.0,
+   "buyHold": 9764.98
   }
  ],
  "recent": [
+  {
+   "candleOpen": "2026-11-28T00:00:00Z",
+   "p": 0.490285,
+   "direction": "down",
+   "action": "flat",
+   "outcome": "pending",
+   "realizedReturnPct": null
+  },
+  {
+   "candleOpen": "2026-11-27T20:00:00Z",
+   "p": null,
+   "direction": null,
+   "action": null,
+   "outcome": "skipped",
+   "realizedReturnPct": null
+  },
+  {
+   "candleOpen": "2026-11-27T16:00:00Z",
+   "p": null,
+   "direction": null,
+   "action": null,
+   "outcome": "skipped",
+   "realizedReturnPct": null
+  },
   {
    "candleOpen": "2026-11-27T12:00:00Z",
    "p": null,
@@ -265,30 +311,6 @@
   },
   {
    "candleOpen": "2026-11-24T20:00:00Z",
-   "p": null,
-   "direction": null,
-   "action": null,
-   "outcome": "skipped",
-   "realizedReturnPct": null
-  },
-  {
-   "candleOpen": "2026-11-24T16:00:00Z",
-   "p": null,
-   "direction": null,
-   "action": null,
-   "outcome": "skipped",
-   "realizedReturnPct": null
-  },
-  {
-   "candleOpen": "2026-11-24T12:00:00Z",
-   "p": null,
-   "direction": null,
-   "action": null,
-   "outcome": "skipped",
-   "realizedReturnPct": null
-  },
-  {
-   "candleOpen": "2026-11-24T08:00:00Z",
    "p": null,
    "direction": null,
    "action": null,
